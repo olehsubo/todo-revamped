@@ -1,3 +1,4 @@
+import { Form } from '@/components/form';
 import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function Home() {
@@ -15,10 +16,12 @@ export default function Home() {
         <ThemeToggle />
       </header>
 
-      <main className='flex flex-1 flex-col justify-center gap-6'>
+      <main className='flex flex-1 flex-col justify-center gap-8'>
         <p className='text-subtle max-w-2xl text-lg'>
-          Your tasks, calendar, and focus tools will live here.
+          Your tasks, calendar, and focus tools will live here. Start by
+          capturing a todo with the creation sheet below.
         </p>
+        <Form />
         <div className='grid gap-4 sm:grid-cols-2'>
           <div className='border-subtle rounded-2xl border border-dashed p-6'>
             <h2 className='text-xl font-semibold'>Upcoming tasks</h2>
