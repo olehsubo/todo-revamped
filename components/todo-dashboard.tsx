@@ -11,32 +11,15 @@ import {
 
 import { Form } from '@/components/form';
 import { TodoList, seededTodos, type TodoItem } from '@/components/todo-list';
+import {
+  TodoFilters,
+  type PriorityFilter,
+  type SortOption
+} from '@/components/todo-filters';
 
 type NewTodoInput = Omit<TodoItem, 'id'>;
 
 const STORAGE_KEY = 'todo-revamped::todos';
-
-const priorityFilterOptions = [
-  { value: 'all', label: 'All priorities' },
-  { value: 'high', label: 'High' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'low', label: 'Low' }
-] as const;
-
-type PriorityFilter = (typeof priorityFilterOptions)[number]['value'];
-
-const sortOptions = [
-  { value: 'created-desc', label: 'Newest first' },
-  { value: 'created-asc', label: 'Oldest first' },
-  { value: 'priority-desc', label: 'Priority high → low' },
-  { value: 'priority-asc', label: 'Priority low → high' },
-  { value: 'title-asc', label: 'Title A → Z' },
-  { value: 'title-desc', label: 'Title Z → A' },
-  { value: 'due-asc', label: 'Due soonest' },
-  { value: 'due-desc', label: 'Due latest' }
-] as const;
-
-type SortOption = (typeof sortOptions)[number]['value'];
 
 function isStoredTodo(value: unknown): value is TodoItem {
   if (typeof value !== 'object' || value === null) {
@@ -162,6 +145,7 @@ export function TodoDashboard() {
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>('all');
   const [dueBeforeFilter, setDueBeforeFilter] = useState('');
   const [sortOrder, setSortOrder] = useState<SortOption>('created-desc');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleCreate = useCallback((todo: NewTodoInput) => {
     const nextTodo: TodoItem = {
@@ -188,7 +172,16 @@ export function TodoDashboard() {
   const filteredTodos = useMemo(() => {
     const filterDate = parseCalendarDate(dueBeforeFilter);
 
+    const normalizedQuery = searchTerm.trim().toLowerCase();
+
     const filtered = todos.filter((todo) => {
+      if (normalizedQuery) {
+        const haystack = `${todo.title} ${todo.description}`.toLowerCase();
+        if (!haystack.includes(normalizedQuery)) {
+          return false;
+        }
+      }
+
       const priorityMatch =
         priorityFilter === 'all' || todo.priority === priorityFilter;
 
@@ -222,10 +215,13 @@ export function TodoDashboard() {
     return withCreationIndex
       .sort((a, b) => comparer(a.todo, b.todo, a.index, b.index))
       .map((entry) => entry.todo);
-  }, [todos, priorityFilter, dueBeforeFilter, sortOrder]);
+  }, [todos, priorityFilter, dueBeforeFilter, sortOrder, searchTerm]);
 
   const hasActiveFilters =
-    priorityFilter !== 'all' || dueBeforeFilter.trim() !== '' || sortOrder !== 'created-desc';
+    priorityFilter !== 'all' ||
+    dueBeforeFilter.trim() !== '' ||
+    sortOrder !== 'created-desc' ||
+    searchTerm.trim() !== '';
 
   const handlePriorityFilterChange = useCallback(
     (event: ChangeEvent<HTMLSelectElement>) => {
@@ -245,11 +241,19 @@ export function TodoDashboard() {
     setPriorityFilter('all');
     setDueBeforeFilter('');
     setSortOrder('created-desc');
+    setSearchTerm('');
   }, []);
 
   const handleSortChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
     setSortOrder(event.target.value as SortOption);
   }, []);
+
+  const handleSearchChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(event.target.value);
+    },
+    []
+  );
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -279,73 +283,18 @@ export function TodoDashboard() {
   return (
     <div className='flex flex-col gap-8'>
       <Form onCreate={handleCreate} />
-      <div className='border-subtle rounded-2xl border bg-[var(--surface-panel)]/70 p-6 shadow-[0_26px_68px_-48px_var(--shadow-soft)]'>
-        <div className='flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between'>
-          <div className='form-layout sm:grid-cols-3'>
-            <div className='form-field'>
-              <label className='form-label' htmlFor='todo-filter-priority'>
-                Priority
-              </label>
-              <select
-                id='todo-filter-priority'
-                className='form-select'
-                value={priorityFilter}
-                onChange={handlePriorityFilterChange}
-              >
-                {priorityFilterOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className='form-field'>
-              <label className='form-label' htmlFor='todo-filter-due-before'>
-                Due on or before
-              </label>
-              <input
-                id='todo-filter-due-before'
-                className='form-input'
-                type='date'
-                value={dueBeforeFilter}
-                onChange={handleDueBeforeChange}
-              />
-              <p className='form-helper'>
-                Leave blank to see todos without a due date.
-              </p>
-            </div>
-
-            <div className='form-field'>
-              <label className='form-label' htmlFor='todo-sort-order'>
-                Sort by
-              </label>
-              <select
-                id='todo-sort-order'
-                className='form-select'
-                value={sortOrder}
-                onChange={handleSortChange}
-              >
-                {sortOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {hasActiveFilters ? (
-            <button
-              type='button'
-              className='action-button self-start sm:self-auto'
-              onClick={handleClearFilters}
-            >
-              Clear filters
-            </button>
-          ) : null}
-        </div>
-      </div>
+      <TodoFilters
+        priority={priorityFilter}
+        dueBefore={dueBeforeFilter}
+        sort={sortOrder}
+        search={searchTerm}
+        hasActiveFilters={hasActiveFilters}
+        onPriorityChange={handlePriorityFilterChange}
+        onDueBeforeChange={handleDueBeforeChange}
+        onSortChange={handleSortChange}
+        onSearchChange={handleSearchChange}
+        onClear={handleClearFilters}
+      />
       <TodoList
         todos={filteredTodos}
         onDelete={handleDelete}
