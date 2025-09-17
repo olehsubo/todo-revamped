@@ -84,10 +84,26 @@ export function TodoList({ todos = seededTodos, onDelete }: TodoListProps) {
             return (
               <li
                 key={todo.id}
-                className='border-subtle-strong group rounded-2xl border bg-[var(--surface-panel)] p-6 transition duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_18px_38px_-32px_var(--shadow-soft)]'
+                className='border-subtle-strong group relative rounded-2xl border bg-[var(--surface-panel)] p-6 transition duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_18px_38px_-32px_var(--shadow-soft)]'
               >
+                {dueDate ? (
+                  <>
+                    <div className='border-subtle mb-4 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-subtle sm:hidden'>
+                      <span>Due</span>
+                      <span className='text-[color:var(--foreground)] tracking-normal'>
+                        {dueDate}
+                      </span>
+                    </div>
+                    <div className='border-subtle absolute right-6 top-6 hidden items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-subtle sm:inline-flex'>
+                      <span>Due</span>
+                      <span className='text-[color:var(--foreground)] tracking-normal'>
+                        {dueDate}
+                      </span>
+                    </div>
+                  </>
+                ) : null}
                 <div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>
-                  <div className='flex flex-col gap-3'>
+                  <div className='flex flex-col gap-3 sm:pr-28'>
                     <div className='flex flex-wrap items-center gap-3'>
                       <h3 className='text-lg font-semibold sm:text-xl'>
                         {todo.title}
@@ -104,15 +120,7 @@ export function TodoList({ todos = seededTodos, onDelete }: TodoListProps) {
                       {todo.description}
                     </p>
                   </div>
-                  <div className='flex items-center gap-3 self-start'>
-                    {dueDate ? (
-                      <div className='border-subtle inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold uppercase  text-subtle'>
-                        <span>Due</span>
-                        <span className='text-[color:var(--foreground)] tracking-normal'>
-                          {dueDate}
-                        </span>
-                      </div>
-                    ) : null}
+                  <div className='flex items-center gap-3 self-start sm:self-end'>
                     {onDelete ? (
                       <button
                         type='button'
