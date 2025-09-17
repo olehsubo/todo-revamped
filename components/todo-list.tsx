@@ -56,7 +56,14 @@ function formatDueDate(value?: string) {
   });
 }
 
-export function TodoList({ todos = seededTodos }: { todos?: TodoItem[] }) {
+interface TodoListProps {
+  todos?: TodoItem[];
+  onDelete?: (id: string) => void;
+}
+
+export function TodoList({ todos = seededTodos, onDelete }: TodoListProps) {
+  const hasTodos = todos.length > 0;
+
   return (
     <section className='glass-panel flex flex-col gap-8'>
       <header>
@@ -65,47 +72,68 @@ export function TodoList({ todos = seededTodos }: { todos?: TodoItem[] }) {
           Your running list
         </h2>
         <p className='text-subtle mt-2 max-w-2xl text-sm sm:text-base'>
-          Every captured task will land here soon. Until persistence arrives,
-          this preview shows three sample todos to set the tone.
+          Every captured task appears here instantly. Until persistence arrives,
+          explore the seeded samples or add your own above.
         </p>
       </header>
 
       <ul className='flex flex-col gap-4'>
-        {todos.map((todo) => {
-          const dueDate = formatDueDate(todo.dueDate);
-          return (
-            <li
-              key={todo.id}
-              className='border-subtle-strong group rounded-2xl border bg-[var(--surface-panel)] p-6 transition duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_18px_38px_-32px_var(--shadow-soft)]'
-            >
-              <div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>
-                <div className='flex flex-col gap-3'>
-                  <div className='flex flex-wrap items-center gap-3'>
-                    <h3 className='text-lg font-semibold sm:text-xl'>
-                      {todo.title}
-                    </h3>
-                    <span
-                      className={`inline-flex items-center rounded-full px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.32em] ${PRIORITY_STYLES[todo.priority]}`}
-                    >
-                      {todo.priority}
-                    </span>
+        {hasTodos ? (
+          todos.map((todo) => {
+            const dueDate = formatDueDate(todo.dueDate);
+            return (
+              <li
+                key={todo.id}
+                className='border-subtle-strong group rounded-2xl border bg-[var(--surface-panel)] p-6 transition duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_18px_38px_-32px_var(--shadow-soft)]'
+              >
+                <div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>
+                  <div className='flex flex-col gap-3'>
+                    <div className='flex flex-wrap items-center gap-3'>
+                      <h3 className='text-lg font-semibold sm:text-xl'>
+                        {todo.title}
+                      </h3>
+                      <span
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.32em] ${
+                          PRIORITY_STYLES[todo.priority]
+                        }`}
+                      >
+                        {todo.priority}
+                      </span>
+                    </div>
+                    <p className='text-subtle text-sm leading-relaxed sm:text-base'>
+                      {todo.description}
+                    </p>
                   </div>
-                  <p className='text-subtle text-sm leading-relaxed sm:text-base'>
-                    {todo.description}
-                  </p>
+                  <div className='flex items-center gap-3 self-start'>
+                    {dueDate ? (
+                      <div className='border-subtle inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold uppercase  text-subtle'>
+                        <span>Due</span>
+                        <span className='text-[color:var(--foreground)] tracking-normal'>
+                          {dueDate}
+                        </span>
+                      </div>
+                    ) : null}
+                    {onDelete ? (
+                      <button
+                        type='button'
+                        className='text-subtle text-xs font-semibold uppercase tracking-[0.28em] transition hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-gradient-end)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]'
+                        onClick={() => onDelete(todo.id)}
+                        aria-label={`Delete todo ${todo.title}`}
+                      >
+                        Delete
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
-                {dueDate ? (
-                  <div className='border-subtle inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-subtle'>
-                    <span>Due</span>
-                    <span className='text-[color:var(--foreground)] tracking-normal'>
-                      {dueDate}
-                    </span>
-                  </div>
-                ) : null}
-              </div>
-            </li>
-          );
-        })}
+              </li>
+            );
+          })
+        ) : (
+          <li className='border-subtle-strong rounded-2xl border bg-[var(--surface-panel)] p-6 text-sm text-subtle'>
+            You&apos;re all caught up. Add a new todo above to keep the momentum
+            going.
+          </li>
+        )}
       </ul>
     </section>
   );

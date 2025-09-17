@@ -21,10 +21,14 @@ export function TodoDashboard() {
     setTodos((current) => [nextTodo, ...current]);
   }, []);
 
+  const handleDelete = useCallback((id: string) => {
+    setTodos((current) => current.filter((todo) => todo.id !== id));
+  }, []);
+
   return (
     <div className='flex flex-col gap-8'>
       <Form onCreate={handleCreate} />
-      <TodoList todos={todos} />
+      <TodoList todos={todos} onDelete={handleDelete} />
     </div>
   );
 }
