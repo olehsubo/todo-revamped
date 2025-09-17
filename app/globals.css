@@ -331,3 +331,55 @@ html[data-theme='dark'] .surface-hint {
   transform: none;
   box-shadow: none;
 }
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-subtle);
+  padding: 0.45rem 1rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease,
+    box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.action-button:hover {
+  color: var(--foreground);
+  border-color: var(--accent-gradient-end);
+  background-color: rgba(99, 102, 241, 0.08);
+}
+
+.action-button:focus-visible {
+  outline: none;
+  color: var(--foreground);
+  border-color: var(--accent-gradient-end);
+  background-color: rgba(99, 102, 241, 0.08);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.action-button--danger {
+  color: var(--danger);
+  border-color: rgba(239, 68, 68, 0.52);
+}
+
+.action-button--danger:hover {
+  color: #ffffff;
+  border-color: var(--danger);
+  background-color: rgba(239, 68, 68, 0.88);
+  box-shadow: 0 12px 36px -20px rgba(239, 68, 68, 0.45);
+}
+
+.action-button--danger:focus-visible {
+  outline: none;
+  color: #ffffff;
+  border-color: var(--danger);
+  background-color: rgba(239, 68, 68, 0.88);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
+}

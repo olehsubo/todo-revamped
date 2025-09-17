@@ -220,9 +220,7 @@ export function Form({ onCreate }: FormProps) {
                 value={values.title}
                 onChange={handleChange('title')}
                 aria-invalid={errors.title ? 'true' : undefined}
-                aria-describedby={
-                  errors.title ? 'todo-title-error' : undefined
-                }
+                aria-describedby={errors.title ? 'todo-title-error' : undefined}
                 autoComplete='off'
                 required
               />
