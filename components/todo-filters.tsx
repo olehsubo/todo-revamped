@@ -47,7 +47,7 @@ export function TodoFilters({
   onClear
 }: TodoFiltersProps) {
   return (
-    <div className='border-subtle rounded-2xl border bg-[var(--surface-panel)]/70 p-6 shadow-[0_26px_68px_-48px_var(--shadow-soft)]'>
+    <div className='filters-panel'>
       <div className='flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between'>
         <div className='form-layout sm:grid-cols-4'>
           <div className='form-field sm:col-span-2'>

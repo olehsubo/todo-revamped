@@ -174,7 +174,7 @@ export function Form({ onCreate }: FormProps) {
 
   return (
     <form
-      className='glass-panel overflow-hidden'
+      className='glass-panel glass-panel--form overflow-hidden'
       onSubmit={handleSubmit}
       noValidate
     >

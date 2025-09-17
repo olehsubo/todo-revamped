@@ -207,7 +207,7 @@ export function TodoList({
   );
 
   return (
-    <section className='glass-panel flex flex-col gap-8'>
+    <section className='glass-panel glass-panel--todos flex flex-col gap-8'>
       <header>
         <span className='badge'>Todos</span>
         <h2 className='mt-4 text-2xl font-semibold sm:text-3xl'>

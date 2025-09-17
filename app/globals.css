@@ -20,6 +20,9 @@
   --surface-input-border: rgba(15, 23, 42, 0.16);
   --surface-input-border-strong: rgba(79, 70, 229, 0.46);
   --surface-input-shadow: rgba(15, 23, 42, 0.07);
+  --surface-form: rgba(255, 255, 255, 0.98);
+  --surface-filters: rgba(244, 247, 255, 0.88);
+  --surface-todos: rgba(248, 249, 255, 0.92);
   --focus-ring: rgba(99, 102, 241, 0.2);
   --placeholder: rgba(71, 85, 105, 0.55);
   --control-border: rgba(17, 24, 39, 0.16);
@@ -52,6 +55,9 @@
   --surface-input-border: rgba(148, 163, 184, 0.32);
   --surface-input-border-strong: rgba(165, 180, 252, 0.62);
   --surface-input-shadow: rgba(148, 163, 184, 0.16);
+  --surface-form: rgba(24, 32, 52, 0.88);
+  --surface-filters: rgba(13, 19, 32, 0.76);
+  --surface-todos: rgba(25, 35, 56, 0.84);
   --focus-ring: rgba(129, 140, 248, 0.27);
   --placeholder: rgba(203, 213, 225, 0.58);
   --control-border: rgba(148, 163, 184, 0.32);
@@ -137,6 +143,14 @@ button {
   overflow: hidden;
 }
 
+.glass-panel--form {
+  background: var(--surface-form);
+}
+
+.glass-panel--todos {
+  background: var(--surface-todos);
+}
+
 .glass-panel::before {
   content: '';
   position: absolute;
@@ -167,6 +181,21 @@ button {
     height: 360px;
     width: 360px;
   }
+}
+
+.filters-panel {
+  border-radius: 1.5rem;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-filters);
+  padding: clamp(1.5rem, 1.5vw + 1.1rem, 2rem);
+  box-shadow: 0 20px 52px -44px var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+html[data-theme='dark'] .filters-panel {
+  border-color: var(--border-subtle-strong);
 }
 
 .form-layout {
