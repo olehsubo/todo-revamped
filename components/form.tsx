@@ -17,6 +17,13 @@ const priorities = [
 
 type Priority = (typeof priorities)[number]['value'];
 
+type CreatedTodo = {
+  title: string;
+  description: string;
+  priority: Priority;
+  dueDate?: string;
+};
+
 interface FormValues {
   title: string;
   description: string;
@@ -31,7 +38,11 @@ const initialValues: FormValues = {
   priority: 'medium'
 };
 
-export function Form() {
+interface FormProps {
+  onCreate?: (todo: CreatedTodo) => void;
+}
+
+export function Form({ onCreate }: FormProps) {
   const [values, setValues] = useState<FormValues>(initialValues);
   const [errors, setErrors] = useState<
     Partial<Record<keyof FormValues, string>>
@@ -122,7 +133,7 @@ export function Form() {
     }
 
     submitTimeoutRef.current = window.setTimeout(() => {
-      const createdTodo = {
+      const createdTodo: CreatedTodo = {
         title: values.title.trim(),
         description: values.description.trim(),
         priority: values.priority,
@@ -131,6 +142,8 @@ export function Form() {
 
       // Surface the captured todo in the console until persistence lands
       console.log('[todo] created', createdTodo);
+
+      onCreate?.(createdTodo);
 
       setStatus('success');
       setLastCreated({

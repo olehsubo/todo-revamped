@@ -1,5 +1,5 @@
-import { Form } from '@/components/form';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { TodoDashboard } from '@/components/todo-dashboard';
 
 export default function Home() {
   return (
@@ -21,21 +21,7 @@ export default function Home() {
           Your tasks, calendar, and focus tools will live here. Start by
           capturing a todo with the creation sheet below.
         </p>
-        <Form />
-        <div className='grid gap-4 sm:grid-cols-2'>
-          <div className='border-subtle rounded-2xl border border-dashed p-6'>
-            <h2 className='text-xl font-semibold'>Upcoming tasks</h2>
-            <p className='text-subtle mt-2 text-sm'>
-              Soon you&apos;ll see AI-prioritised tasks for the day.
-            </p>
-          </div>
-          <div className='border-subtle rounded-2xl border border-dashed p-6'>
-            <h2 className='text-xl font-semibold'>Focus mode</h2>
-            <p className='text-subtle mt-2 text-sm'>
-              We&apos;re crafting a deep work mode with ambient insights.
-            </p>
-          </div>
-        </div>
+        <TodoDashboard />
       </main>
 
       <footer className='border-subtle flex flex-col gap-2 border-t pt-6 text-subtle text-sm sm:flex-row sm:items-center sm:justify-between'>
