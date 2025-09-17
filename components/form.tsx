@@ -17,29 +17,6 @@ const priorities = [
 
 type Priority = (typeof priorities)[number]['value'];
 
-const quickTips = [
-  {
-    label: 'Title',
-    title: 'Lead with an action',
-    body: 'Kick off titles with verbs so future-you knows exactly what to do next.'
-  },
-  {
-    label: 'Notes',
-    title: 'Add context that speeds you up later',
-    body: 'Drop links, bullet points, or reminders to make the task easier to finish.'
-  },
-  {
-    label: 'Due date',
-    title: 'Ground it in your timeline',
-    body: "Pick a day you can commit to. We'll surface nudges as the date nears."
-  },
-  {
-    label: 'Priority',
-    title: 'Match it with your energy',
-    body: "Save High for blockers, Medium for today's focus, and Low for later ideas."
-  }
-] as const;
-
 interface FormValues {
   title: string;
   description: string;
@@ -216,159 +193,127 @@ export function Form() {
           ) : null}
         </div>
 
-        <div className='grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:items-start'>
-          <div className='flex flex-col gap-6'>
-            <div className='form-layout'>
+        <div className='flex flex-col gap-6'>
+          <div className='form-layout'>
+            <div className='form-field'>
+              <label className='form-label' htmlFor='todo-title'>
+                Title
+              </label>
+              <input
+                id='todo-title'
+                name='title'
+                className='form-input'
+                placeholder='Write the task in a sentence'
+                value={values.title}
+                onChange={handleChange('title')}
+                aria-invalid={errors.title ? 'true' : undefined}
+                aria-describedby={
+                  errors.title ? 'todo-title-error' : undefined
+                }
+                autoComplete='off'
+                required
+              />
+              {errors.title ? (
+                <p className='form-error' id='todo-title-error' role='alert'>
+                  {errors.title}
+                </p>
+              ) : (
+                <p className='form-helper'>Keep it short but intentional.</p>
+              )}
+            </div>
+
+            <div className='form-field'>
+              <label className='form-label' htmlFor='todo-notes'>
+                Notes
+              </label>
+              <textarea
+                id='todo-notes'
+                name='description'
+                className='form-textarea'
+                placeholder='Add context, links, or a checklist for future you'
+                value={values.description}
+                onChange={handleChange('description')}
+                aria-describedby='todo-notes-helper'
+              />
+              <p className='form-helper' id='todo-notes-helper'>
+                Rich editing is coming soon -- for now, jot quick context to
+                stay sharp.
+              </p>
+            </div>
+
+            <div className='form-layout sm:grid-cols-2'>
               <div className='form-field'>
-                <label className='form-label' htmlFor='todo-title'>
-                  Title
+                <label className='form-label' htmlFor='todo-due-date'>
+                  Due date
                 </label>
                 <input
-                  id='todo-title'
-                  name='title'
+                  id='todo-due-date'
+                  name='dueDate'
                   className='form-input'
-                  placeholder='Write the task in a sentence'
-                  value={values.title}
-                  onChange={handleChange('title')}
-                  aria-invalid={errors.title ? 'true' : undefined}
+                  type='date'
+                  min={minDueDate}
+                  value={values.dueDate}
+                  onChange={handleChange('dueDate')}
+                  aria-invalid={errors.dueDate ? 'true' : undefined}
                   aria-describedby={
-                    errors.title ? 'todo-title-error' : undefined
+                    errors.dueDate
+                      ? 'todo-due-date-error'
+                      : 'todo-due-date-helper'
                   }
-                  autoComplete='off'
-                  required
                 />
-                {errors.title ? (
-                  <p className='form-error' id='todo-title-error' role='alert'>
-                    {errors.title}
+                {errors.dueDate ? (
+                  <p
+                    className='form-error'
+                    id='todo-due-date-error'
+                    role='alert'
+                  >
+                    {errors.dueDate}
                   </p>
                 ) : (
-                  <p className='form-helper'>Keep it short but intentional.</p>
+                  <p className='form-helper' id='todo-due-date-helper'>
+                    Optional, but we&apos;ll nudge you as deadlines come close.
+                  </p>
                 )}
               </div>
 
               <div className='form-field'>
-                <label className='form-label' htmlFor='todo-notes'>
-                  Notes
+                <label className='form-label' htmlFor='todo-priority'>
+                  Priority
                 </label>
-                <textarea
-                  id='todo-notes'
-                  name='description'
-                  className='form-textarea'
-                  placeholder='Add context, links, or a checklist for future you'
-                  value={values.description}
-                  onChange={handleChange('description')}
-                  aria-describedby='todo-notes-helper'
-                />
-                <p className='form-helper' id='todo-notes-helper'>
-                  Rich editing is coming soon -- for now, jot quick context to
-                  stay sharp.
+                <select
+                  id='todo-priority'
+                  name='priority'
+                  className='form-select'
+                  value={values.priority}
+                  onChange={handleChange('priority')}
+                >
+                  {priorities.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <p className='form-helper'>
+                  Medium keeps it balanced. Crank it to High when it can&apos;t
+                  slip.
                 </p>
               </div>
-
-              <div className='form-layout sm:grid-cols-2'>
-                <div className='form-field'>
-                  <label className='form-label' htmlFor='todo-due-date'>
-                    Due date
-                  </label>
-                  <input
-                    id='todo-due-date'
-                    name='dueDate'
-                    className='form-input'
-                    type='date'
-                    min={minDueDate}
-                    value={values.dueDate}
-                    onChange={handleChange('dueDate')}
-                    aria-invalid={errors.dueDate ? 'true' : undefined}
-                    aria-describedby={
-                      errors.dueDate
-                        ? 'todo-due-date-error'
-                        : 'todo-due-date-helper'
-                    }
-                  />
-                  {errors.dueDate ? (
-                    <p
-                      className='form-error'
-                      id='todo-due-date-error'
-                      role='alert'
-                    >
-                      {errors.dueDate}
-                    </p>
-                  ) : (
-                    <p className='form-helper' id='todo-due-date-helper'>
-                      Optional, but we&apos;ll nudge you as deadlines come
-                      close.
-                    </p>
-                  )}
-                </div>
-
-                <div className='form-field'>
-                  <label className='form-label' htmlFor='todo-priority'>
-                    Priority
-                  </label>
-                  <select
-                    id='todo-priority'
-                    name='priority'
-                    className='form-select'
-                    value={values.priority}
-                    onChange={handleChange('priority')}
-                  >
-                    {priorities.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <p className='form-helper'>
-                    Medium keeps it balanced. Crank it to High when it
-                    can&apos;t slip.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
-              <p className='text-subtle text-sm'>
-                Submitting will soon sync with your calendar, daily focus, and
-                notifications.
-              </p>
-              <button
-                className='button-primary'
-                type='submit'
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Adding...' : 'Add todo'}
-              </button>
             </div>
           </div>
 
-          <aside className='surface-hint'>
-            <div>
-              <p className='text-subtle text-xs font-semibold uppercase tracking-[0.35em]'>
-                Field guide
-              </p>
-              <h3 className='mt-2 text-lg font-semibold'>
-                Make each todo self-explanatory
-              </h3>
-            </div>
-            <ul className='form-checklist'>
-              {quickTips.map((tip) => (
-                <li key={tip.label}>
-                  <div>
-                    <p className='text-subtle text-[0.7rem] font-semibold uppercase tracking-[0.35em]'>
-                      {tip.label}
-                    </p>
-                    <p className='mt-1 text-sm font-semibold'>{tip.title}</p>
-                    <p className='text-subtle mt-1 text-sm leading-relaxed'>
-                      {tip.body}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <p className='text-subtle text-xs uppercase tracking-[0.28em]'>
-              Coming soon: smart templates for routines.
+          <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+            <p className='text-subtle text-sm'>
+              Submitting will soon sync with your calendar, daily focus, and
+              notifications.
             </p>
-          </aside>
+            <button
+              className='button-primary'
+              type='submit'
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Adding...' : 'Add todo'}
+            </button>
+          </div>
         </div>
       </div>
     </form>
